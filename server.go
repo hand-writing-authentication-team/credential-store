@@ -1,12 +1,15 @@
 package main
 
 import (
-	"log"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
-	"github.com/golang/glog"
+	"github.com/hand-writing-authentication-team/credential-store/events"
 	"github.com/hand-writing-authentication-team/credential-store/queue"
+	log "github.com/sirupsen/logrus"
+	"github.com/streadway/amqp"
 )
 
 type config struct {
@@ -16,6 +19,7 @@ type config struct {
 	mqPassword string
 
 	QC *queue.Queue
+	ch <-chan amqp.Delivery
 }
 
 var goroutineDelta = make(chan int)
@@ -41,8 +45,18 @@ func start() {
 }
 
 func main() {
-	glog.Info("start to bootstrap credential-store server")
+
+	log.Info("start to bootstrap credential-store server")
 	start()
+	gentlyExit()
+	// set up listener logic
+	var err error
+	serverConfig.ch, err = serverConfig.QC.Consume("credstoreIn")
+	if err != nil {
+		log.Fatal("queue is not declared")
+		os.Exit(1)
+	}
+
 	go forever()
 
 	numGoroutines := 0
@@ -56,17 +70,37 @@ func main() {
 
 // Conceptual code
 func forever() {
-	for {
-		if needToCreateANewGoroutine {
-			// Make sure to do this before "go f()", not within f()
-			goroutineDelta <- +1
-
-			go f()
+	log.Info("server started.")
+	foreverRunner := make(chan bool)
+	go func() {
+		for d := range serverConfig.ch {
+			err := events.GenericEventHandler(d.Body, serverConfig.QC)
+			if err != nil {
+				log.Infof("met a error that is %s", err)
+			}
 		}
-	}
+	}()
+	log.Info("waiting...")
+	<-foreverRunner
 }
 
-func f() {
-	// When the termination condition for this goroutine is detected, do:
+func gentlyExit() {
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		err := serverConfig.QC.DestroyQueueInstance()
+		if err != nil {
+			log.WithField("error", err).Fatal("queue connection close failed")
+			os.Exit(1)
+		} else {
+			log.Info("queue connection closed properly, gently quitting")
+			os.Exit(0)
+		}
+	}()
+}
+
+func printer(msg string) {
 	goroutineDelta <- -1
+	log.Infof("%s", msg)
 }
