@@ -1,3 +1,5 @@
+CREATE USER credadmin WITH PASSWORD 'Test1234@' CREATEDB LOGIN;
+\c credstore;
 CREATE TABLE user_cred(
    id SERIAL UNIQUE PRIMARY KEY,
    username TEXT NOT NULL CHECK(username <> ''),
@@ -9,4 +11,4 @@ CREATE TABLE user_cred(
    UNIQUE(username)
 );
 
-GRANT SELECT, INSERT, UPDATE ON TABLE user_cred to credAdmin;
+GRANT SELECT, INSERT, UPDATE ON TABLE user_cred to credadmin;

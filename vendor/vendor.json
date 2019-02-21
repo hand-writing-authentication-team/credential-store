@@ -1,0 +1,55 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "r6ZMyP/HsdeToXIxvgP3ntL6Bds=",
+			"path": "github.com/konsorten/go-windows-terminal-sequences",
+			"revision": "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242",
+			"revisionTime": "2018-10-04T22:41:46Z"
+		},
+		{
+			"checksumSHA1": "xxLSo5tKtXc7jGrR70yoEfza8Cw=",
+			"path": "github.com/lib/pq",
+			"revision": "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee",
+			"revisionTime": "2018-10-16T16:26:27Z"
+		},
+		{
+			"checksumSHA1": "AU3fA8Sm33Vj9PBoRPSeYfxLRuE=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee",
+			"revisionTime": "2018-10-16T16:26:27Z"
+		},
+		{
+			"checksumSHA1": "KIAfjm15EMYrXXbVBUO6ZX9c4t0=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "4f5fd631f16452fbd023813c1eb7dbd67130cb0c",
+			"revisionTime": "2019-02-20T17:22:53Z"
+		},
+		{
+			"checksumSHA1": "b917RExL1bWDFTOccYzC3S8gn7s=",
+			"path": "github.com/streadway/amqp",
+			"revision": "884228600bc96c993ab12fb81ba78bf0c280e88a",
+			"revisionTime": "2019-02-14T18:30:23Z"
+		},
+		{
+			"checksumSHA1": "CVmt+DETeuUZkKC6MUJbTqc/iYU=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "a4c6cb3142f211c99e4bf4cd769535b29a9b616f",
+			"revisionTime": "2019-02-12T17:56:05Z"
+		},
+		{
+			"checksumSHA1": "k8nyiVwbKd7N/Lo9z85y6v/03NE=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "b4e8571b14e03cc164df06f72b640ebce3899579",
+			"revisionTime": "2019-02-15T10:12:20Z"
+		},
+		{
+			"checksumSHA1": "Hu8GoQK1euwtE4UjrhXepmk2NM8=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "b4e8571b14e03cc164df06f72b640ebce3899579",
+			"revisionTime": "2019-02-15T10:12:20Z"
+		}
+	],
+	"rootPath": "github.com/hand-writing-authentication-team/credential-store"
+}

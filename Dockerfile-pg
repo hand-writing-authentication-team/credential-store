@@ -1,0 +1,6 @@
+FROM postgres:10.6
+
+# WORKDIR ~/go/src/github.com/hand-writing-authentication-team/credential-store/
+
+# COPY db/postgres/cred-roles.sql /docker-entrypoint-initdb.d/1.sql
+COPY db/postgres/cred.sql /docker-entrypoint-initdb.d/2.sql

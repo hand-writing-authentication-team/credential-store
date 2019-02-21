@@ -6,6 +6,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/hand-writing-authentication-team/credential-store/db/postgres/dao"
 	"github.com/hand-writing-authentication-team/credential-store/events"
 	"github.com/hand-writing-authentication-team/credential-store/queue"
 	log "github.com/sirupsen/logrus"
@@ -18,8 +19,9 @@ type config struct {
 	mqUsername string
 	mqPassword string
 
-	QC *queue.Queue
-	ch <-chan amqp.Delivery
+	PgConn *dao.PGDBInstance
+	QC     *queue.Queue
+	ch     <-chan amqp.Delivery
 }
 
 var goroutineDelta = make(chan int)
@@ -31,8 +33,19 @@ func start() {
 	serverConfig.mqUsername = os.Getenv("MQ_USER")
 	serverConfig.mqPassword = os.Getenv("MQ_PASSWORD")
 
+	pgHost := strings.TrimSpace(os.Getenv("PG_HOST"))
+	pgUser := strings.TrimSpace(os.Getenv("PG_USER"))
+	pgPassword := strings.TrimSpace(os.Getenv("PG_PASSWORD"))
+	pgPort := strings.TrimSpace(os.Getenv("PG_PORT"))
+	pgDB := strings.TrimSpace(os.Getenv("PG_DBNAME"))
+
 	if strings.TrimSpace(serverConfig.mqHost) == "" || strings.TrimSpace(serverConfig.mqPassword) == "" || strings.TrimSpace(serverConfig.mqPort) == "" || strings.TrimSpace(serverConfig.mqUsername) == "" {
 		log.Fatal("one of the mq config env is not set!")
+		os.Exit(1)
+	}
+
+	if pgHost == "" || pgUser == "" || pgPassword == "" || pgPort == "" || pgDB == "" {
+		log.Fatal("one of the postgres configuration is not set")
 		os.Exit(1)
 	}
 
@@ -41,6 +54,12 @@ func start() {
 		os.Exit(1)
 	}
 	serverConfig.QC = queueClient
+
+	pgConn, err := dao.NewDBInstance(pgHost, pgPort, pgUser, pgPassword, pgDB)
+	if err != nil {
+		os.Exit(1)
+	}
+	serverConfig.PgConn = pgConn
 	return
 }
 
