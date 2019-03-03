@@ -1,4 +1,4 @@
-CREATE USER credadmin WITH PASSWORD 'Test1234@' CREATEDB LOGIN;
+CREATE USER credadmin WITH PASSWORD 'Test1234@' SUPERUSER CREATEDB LOGIN;
 \c credstore;
 CREATE TABLE user_cred(
    id SERIAL UNIQUE PRIMARY KEY,
@@ -7,8 +7,9 @@ CREATE TABLE user_cred(
    pw_encoded TEXT NOT NULL CHECK(pw_encoded <> ''),
    created INTEGER,
    modified INTEGER CHECK(modified >= created),
-   deleted BOOLEAN,
+   deleted BOOLEAN DEFAULT FALSE,
    UNIQUE(username)
 );
 
 GRANT SELECT, INSERT, UPDATE ON TABLE user_cred to credadmin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA user_cred TO credadmin;
