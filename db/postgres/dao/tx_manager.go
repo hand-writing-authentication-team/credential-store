@@ -20,7 +20,7 @@ func (txm *TXManager) Rollback() (err error) {
 
 func (txm *TXManager) End(err error) error {
 	if err != nil {
-		return txm.Commit()
+		return txm.Rollback()
 	}
-	return txm.Rollback()
+	return txm.Commit()
 }
