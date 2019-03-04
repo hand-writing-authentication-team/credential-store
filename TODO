@@ -1,2 +1,3 @@
 1. add one more model for update and delete auth req model
 2. add result queue connection and linkage
+3. add script for waiting for rabbitmq and postgres to be on before the credential-stre start
