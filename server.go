@@ -6,6 +6,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/hand-writing-authentication-team/credential-store/db/postgres/pg_actions"
+
 	"github.com/hand-writing-authentication-team/credential-store/db/postgres/dao"
 	"github.com/hand-writing-authentication-team/credential-store/events"
 	"github.com/hand-writing-authentication-team/credential-store/queue"
@@ -19,9 +21,9 @@ type config struct {
 	mqUsername string
 	mqPassword string
 
-	PgConn *dao.PGDBInstance
-	QC     *queue.Queue
-	ch     <-chan amqp.Delivery
+	PgAct *pg_actions.PgActions
+	QC    *queue.Queue
+	ch    <-chan amqp.Delivery
 }
 
 var goroutineDelta = make(chan int)
@@ -59,7 +61,7 @@ func start() {
 	if err != nil {
 		os.Exit(1)
 	}
-	serverConfig.PgConn = pgConn
+	serverConfig.PgAct = pg_actions.NewPgActions(pgConn)
 	return
 }
 
@@ -93,7 +95,7 @@ func forever() {
 	foreverRunner := make(chan bool)
 	go func() {
 		for d := range serverConfig.ch {
-			err := events.GenericEventHandler(d.Body, serverConfig.QC)
+			err := events.GenericEventHandler(d.Body, serverConfig.QC, serverConfig.PgAct)
 			if err != nil {
 				log.Infof("met a error that is %s", err)
 			}
@@ -117,9 +119,4 @@ func gentlyExit() {
 			os.Exit(0)
 		}
 	}()
-}
-
-func printer(msg string) {
-	goroutineDelta <- -1
-	log.Infof("%s", msg)
 }
