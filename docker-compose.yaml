@@ -1,6 +1,13 @@
 version: '3.1'
 
 services:
+  redis:
+    image: "redis:latest"
+    restart: always
+    container_name: redis
+    ports: 
+      - "6379:6379"
+
   db:
     build:
       context: .
@@ -48,6 +55,8 @@ services:
       - PG_PASSWORD=Test1234@
       - PG_DBNAME=credstore
       - PG_PORT=5432
+      - REDIS_ADDR=redis:6379
+      - REDIS_CH=result
 
 volumes:
   db-data:

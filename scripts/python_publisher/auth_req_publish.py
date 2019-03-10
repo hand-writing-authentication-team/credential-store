@@ -30,3 +30,6 @@ channel.basic_publish(exchange='auth_bus',
 channel.basic_publish(exchange='auth_bus',
                       routing_key='auth_req',
                       body=failed_auth_message)
+
+channel.close()
+connection.close()

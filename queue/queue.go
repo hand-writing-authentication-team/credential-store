@@ -3,6 +3,7 @@ package queue
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
@@ -19,8 +20,15 @@ func NewQueueInstance(host, port, username, password string) (*Queue, error) {
 	amqpStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", username, password, host, port)
 	conn, err := amqp.Dial(amqpStr)
 	if err != nil {
-		log.Fatalf("error %s occurred when dialling rabbitmq", err)
-		return nil, err
+		log.Infof("error %s occurred when dialling rabbitmq", err)
+		log.Info("Will start retrying")
+		counter := 0
+		for err != nil {
+			counter++
+			time.Sleep(5 * time.Second)
+			log.Infof("restart %s th times", counter)
+			conn, err = amqp.Dial(amqpStr)
+		}
 	}
 	queueClient := &Queue{}
 	queueClient.conn = conn

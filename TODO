@@ -1,3 +1,8 @@
-1. add one more model for update and delete auth req model
-2. add result queue connection and linkage
-3. add script for waiting for rabbitmq and postgres to be on before the credential-stre start
+1. add one more model for update and delete auth req model - no need, because delete and update cannot be done unless get auth'ed
+2. add result queue connection and linkage - mostly done. will revisit this when API server is done
+3. add script for waiting for rabbitmq and postgres to be on before the credential-stre start - done in the code
+
+-------
+update 3/10/19
+This part is almost, done. Will need to add CICD for this repo to GCP
+I will be working on api server and revisit this once everything is done.

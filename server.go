@@ -23,6 +23,7 @@ type config struct {
 
 	PgAct *pg_actions.PgActions
 	QC    *queue.Queue
+	RQ    *queue.ResultQueue
 	ch    <-chan amqp.Delivery
 }
 
@@ -41,6 +42,9 @@ func start() {
 	pgPort := strings.TrimSpace(os.Getenv("PG_PORT"))
 	pgDB := strings.TrimSpace(os.Getenv("PG_DBNAME"))
 
+	redisAddr := strings.TrimSpace(os.Getenv("REDIS_ADDR"))
+	redisChannel := strings.TrimSpace(os.Getenv("REDIS_CH"))
+
 	if strings.TrimSpace(serverConfig.mqHost) == "" || strings.TrimSpace(serverConfig.mqPassword) == "" || strings.TrimSpace(serverConfig.mqPort) == "" || strings.TrimSpace(serverConfig.mqUsername) == "" {
 		log.Fatal("one of the mq config env is not set!")
 		os.Exit(1)
@@ -48,6 +52,11 @@ func start() {
 
 	if pgHost == "" || pgUser == "" || pgPassword == "" || pgPort == "" || pgDB == "" {
 		log.Fatal("one of the postgres configuration is not set")
+		os.Exit(1)
+	}
+
+	if redisAddr == "" || redisChannel == "" {
+		log.Fatal("one of the redis configuration is not set")
 		os.Exit(1)
 	}
 
@@ -62,6 +71,11 @@ func start() {
 		os.Exit(1)
 	}
 	serverConfig.PgAct = pg_actions.NewPgActions(pgConn)
+
+	serverConfig.RQ, err = queue.NewRedisClient(redisAddr, redisChannel)
+	if err != nil {
+		os.Exit(1)
+	}
 	return
 }
 
@@ -84,7 +98,7 @@ func main() {
 	for diff := range goroutineDelta {
 		numGoroutines += diff
 		if numGoroutines == 0 {
-			os.Exit(0)
+			log.Info("no more requests, waiting")
 		}
 	}
 }
@@ -95,10 +109,9 @@ func forever() {
 	foreverRunner := make(chan bool)
 	go func() {
 		for d := range serverConfig.ch {
-			err := events.GenericEventHandler(d.Body, serverConfig.QC, serverConfig.PgAct)
-			if err != nil {
-				log.Infof("met a error that is %s", err)
-			}
+			goroutineDelta <- 1
+			events.GenericEventHandler(d.Body, serverConfig.QC, serverConfig.PgAct, serverConfig.RQ)
+			goroutineDelta <- -1
 		}
 	}()
 	log.Info("waiting...")

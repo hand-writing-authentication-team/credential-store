@@ -3,6 +3,48 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "+Sjy3jHYf/a3Dqy+unNTup28Eeg=",
+			"path": "github.com/go-redis/redis",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "tZJRl4B7hKoRe+nWAMA4JtsM7Kc=",
+			"path": "github.com/go-redis/redis/internal",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "GQZsUVg/+6UpQAYpc4luMvMutSI=",
+			"path": "github.com/go-redis/redis/internal/consistenthash",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "l66eTZiJqueypc56HXCakGDm784=",
+			"path": "github.com/go-redis/redis/internal/hashtag",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "WoUjtqpn00RUnAgZLljk3lWfpSQ=",
+			"path": "github.com/go-redis/redis/internal/pool",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "zCo0t+gRBbctwyIpkDLrqRFtXew=",
+			"path": "github.com/go-redis/redis/internal/proto",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
+			"checksumSHA1": "1PH2NoAB/u3IZmLYyCrIbOzqLZ4=",
+			"path": "github.com/go-redis/redis/internal/util",
+			"revision": "0d39ee897681bf3a2897241627518b4735e5ea77",
+			"revisionTime": "2019-03-07T12:31:53Z"
+		},
+		{
 			"checksumSHA1": "r6ZMyP/HsdeToXIxvgP3ntL6Bds=",
 			"path": "github.com/konsorten/go-windows-terminal-sequences",
 			"revision": "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242",

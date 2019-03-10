@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/hand-writing-authentication-team/credential-store/models"
 	_ "github.com/lib/pq"
@@ -32,7 +33,14 @@ func NewDBInstance(dbhost, dbport, dbuser, dbpass, dbname string) (*PGDBInstance
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.WithField("error", err).Error("cannot open postgres server")
-		return nil, err
+		log.Info("Will start retrying")
+		counter := 0
+		for err != nil {
+			counter++
+			time.Sleep(5 * time.Second)
+			log.Infof("restart %s th times", counter)
+			db, err = sql.Open("postgres", psqlInfo)
+		}
 	}
 	err = db.Ping()
 	if err != nil {
