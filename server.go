@@ -43,7 +43,6 @@ func start() {
 	pgDB := strings.TrimSpace(os.Getenv("PG_DBNAME"))
 
 	redisAddr := strings.TrimSpace(os.Getenv("REDIS_ADDR"))
-	redisChannel := strings.TrimSpace(os.Getenv("REDIS_CH"))
 
 	if strings.TrimSpace(serverConfig.mqHost) == "" || strings.TrimSpace(serverConfig.mqPassword) == "" || strings.TrimSpace(serverConfig.mqPort) == "" || strings.TrimSpace(serverConfig.mqUsername) == "" {
 		log.Fatal("one of the mq config env is not set!")
@@ -55,7 +54,7 @@ func start() {
 		os.Exit(1)
 	}
 
-	if redisAddr == "" || redisChannel == "" {
+	if redisAddr == "" {
 		log.Fatal("one of the redis configuration is not set")
 		os.Exit(1)
 	}
@@ -72,7 +71,7 @@ func start() {
 	}
 	serverConfig.PgAct = pg_actions.NewPgActions(pgConn)
 
-	serverConfig.RQ, err = queue.NewRedisClient(redisAddr, redisChannel)
+	serverConfig.RQ, err = queue.NewRedisClient(redisAddr)
 	if err != nil {
 		os.Exit(1)
 	}

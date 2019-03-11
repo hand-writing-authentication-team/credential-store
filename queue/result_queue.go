@@ -11,11 +11,10 @@ import (
 )
 
 type ResultQueue struct {
-	redisDB       *redis.Client
-	resultChannel string
+	redisDB *redis.Client
 }
 
-func NewRedisClient(addr, resultChannel string) (*ResultQueue, error) {
+func NewRedisClient(addr string) (*ResultQueue, error) {
 	rq := &ResultQueue{}
 	rq.redisDB = redis.NewClient(&redis.Options{
 		Addr:         addr,
@@ -37,7 +36,6 @@ func NewRedisClient(addr, resultChannel string) (*ResultQueue, error) {
 			_, err = rq.redisDB.Ping().Result()
 		}
 	}
-	rq.resultChannel = resultChannel
 	log.Info("successfully connected to redis!")
 	return rq, nil
 }
@@ -56,7 +54,7 @@ func (rq *ResultQueue) SuccessInfo(authReq models.AuthenticationRequest) error {
 	}
 	resultStr = (string)(resultBytes)
 	// Publish a message.
-	err = rq.redisDB.Publish(rq.resultChannel, resultStr).Err()
+	err = rq.redisDB.Set(authReq.JobID, resultStr, 0).Err()
 	if err != nil {
 		log.WithError(err).Errorf("failed to give SUCCESS info for job %s", authReq.JobID)
 		return err
@@ -79,7 +77,7 @@ func (rq *ResultQueue) FailureInfo(authReq models.AuthenticationRequest, msg str
 	}
 	resultStr = (string)(resultBytes)
 	// Publish a message.
-	err = rq.redisDB.Publish(rq.resultChannel, resultStr).Err()
+	err = rq.redisDB.Set(authReq.JobID, resultStr, 0).Err()
 	if err != nil {
 		log.WithError(err).Errorf("failed to give FAILURE info for job %s", authReq.JobID)
 		return err
@@ -102,7 +100,7 @@ func (rq *ResultQueue) ErrorInfo(authReq models.AuthenticationRequest, msg strin
 	}
 	resultStr = (string)(resultBytes)
 	// Publish a message.
-	err = rq.redisDB.Publish(rq.resultChannel, resultStr).Err()
+	err = rq.redisDB.Set(authReq.JobID, resultStr, 0).Err()
 	if err != nil {
 		log.WithError(err).Errorf("failed to give ERROR info for job %s", authReq.JobID)
 		return err
