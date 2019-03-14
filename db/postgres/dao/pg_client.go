@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/hand-writing-authentication-team/credential-store/models"
+	"github.com/hand-writing-authentication-team/credential-store/pkg/constants"
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 )
@@ -79,6 +81,10 @@ func (p *PGDBInstance) Insert(txm *TXManager, ucm models.UserCredentials) (*mode
 	err := scanUserCredRow(row, retUcm)
 	if err != nil {
 		log.WithError(err).Errorf("insertion for user %s failed", ucm.Username)
+		pqErr := err.(*pq.Error)
+		if pqErr.Code == "23505" {
+			return nil, errors.New(constants.ACCOUNT_ALREADY_EXIST)
+		}
 		return nil, err
 	}
 	log.Infof("Insertion for user %s succeeded!", ucm.Username)

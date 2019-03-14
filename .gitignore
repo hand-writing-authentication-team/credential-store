@@ -13,3 +13,4 @@
 
 vendor/github.com
 vendor/golang.org
+vendor/*/

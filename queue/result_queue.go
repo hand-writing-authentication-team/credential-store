@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hand-writing-authentication-team/credential-store/models"
+	"github.com/hand-writing-authentication-team/credential-store/pkg/constants"
 
 	"github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"
@@ -43,7 +44,7 @@ func NewRedisClient(addr string) (*ResultQueue, error) {
 func (rq *ResultQueue) SuccessInfo(authReq models.AuthenticationRequest) error {
 	resultResp := models.ResultResp{
 		JobID:     authReq.JobID,
-		Status:    "success",
+		Status:    constants.StatusCreated,
 		TimeStamp: time.Now().Unix(),
 	}
 	var resultStr string
@@ -65,7 +66,7 @@ func (rq *ResultQueue) SuccessInfo(authReq models.AuthenticationRequest) error {
 func (rq *ResultQueue) FailureInfo(authReq models.AuthenticationRequest, msg string) error {
 	resultResp := models.ResultResp{
 		JobID:     authReq.JobID,
-		Status:    "failure",
+		Status:    constants.StatusError,
 		ErrorMsg:  msg,
 		TimeStamp: time.Now().Unix(),
 	}
@@ -86,9 +87,15 @@ func (rq *ResultQueue) FailureInfo(authReq models.AuthenticationRequest, msg str
 }
 
 func (rq *ResultQueue) ErrorInfo(authReq models.AuthenticationRequest, msg string) error {
+	var status string
+	if msg == constants.ACCOUNT_ALREADY_EXIST {
+		status = constants.StatusConflict
+	} else {
+		status = constants.StatusError
+	}
 	resultResp := models.ResultResp{
 		JobID:     authReq.JobID,
-		Status:    "error",
+		Status:    status,
 		ErrorMsg:  msg,
 		TimeStamp: time.Now().Unix(),
 	}

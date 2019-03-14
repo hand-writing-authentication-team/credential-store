@@ -6,5 +6,10 @@ const (
 	DeleteAction = "delete"
 	UpdateAction = "update"
 
-	NOT_MATCH = "password not match"
+	StatusError    = "ERROR"
+	StatusCreated  = "CREATED"
+	StatusConflict = "CONFLICT"
+
+	NOT_MATCH             = "password not match"
+	ACCOUNT_ALREADY_EXIST = "account already exist"
 )
