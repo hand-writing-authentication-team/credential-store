@@ -33,7 +33,7 @@ func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.P
 				rq.ErrorInfo(authReq, err.Error())
 				return
 			}
-			rq.SuccessInfo(authReq)
+			rq.SuccessInfo(authReq, constants.StatusCreated)
 			break
 		case constants.AuthAction:
 			log.Info("start to authenticate user")
@@ -55,7 +55,7 @@ func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.P
 				}
 			}
 			log.Infof("user %s has authenticate password successfully", authReq.Username)
-			rq.SuccessInfo(authReq)
+			rq.SuccessInfo(authReq, constants.StatusAuthenticated)
 			break
 		case constants.UpdateAction:
 			log.Infof("start to update user")
@@ -72,7 +72,7 @@ func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.P
 					return
 				}
 			}
-			rq.SuccessInfo(authReq)
+			rq.SuccessInfo(authReq, constants.StatusSuccess)
 			break
 		case constants.DeleteAction:
 			log.Infof("start to delete user")
@@ -89,7 +89,7 @@ func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.P
 					return
 				}
 			}
-			rq.SuccessInfo(authReq)
+			rq.SuccessInfo(authReq, constants.StatusSuccess)
 			break
 		default:
 			break

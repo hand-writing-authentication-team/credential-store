@@ -41,10 +41,10 @@ func NewRedisClient(addr string) (*ResultQueue, error) {
 	return rq, nil
 }
 
-func (rq *ResultQueue) SuccessInfo(authReq models.AuthenticationRequest) error {
+func (rq *ResultQueue) SuccessInfo(authReq models.AuthenticationRequest, status string) error {
 	resultResp := models.ResultResp{
 		JobID:     authReq.JobID,
-		Status:    constants.StatusCreated,
+		Status:    status,
 		TimeStamp: time.Now().Unix(),
 	}
 	var resultStr string
