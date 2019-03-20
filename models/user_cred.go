@@ -5,6 +5,7 @@ type UserCredentials struct {
 	Username        string
 	PasswordContent string
 	Handwriting     string
+	Race            string
 	Created         int64
 	Modified        int64
 	Deleted         bool

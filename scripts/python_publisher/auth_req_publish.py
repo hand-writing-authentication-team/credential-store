@@ -12,7 +12,7 @@ channel.queue_bind(exchange='auth_bus',
                    queue='credstoreIn',
                    routing_key='auth_req')
 
-create_message = '{"jobid": "1234", "username": "todd", "password": "1234abcd", "handwriting": "1a2b3c4d", "action": "create"}'
+create_message = '{"jobid": "1234", "username": "todd", "password": "1234abcd", "handwriting": "1a2b3c4d", "race": "1234", "action": "create"}'
 auth_message = '{"jobid": "1235", "username": "todd", "password": "1234abcd", "action": "authenticate"}'
 failed_auth_message = '{"jobid": "1235", "username": "todd", "password": "1a2b3c4d", "action": "authenticate"}'
 

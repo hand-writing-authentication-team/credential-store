@@ -5,5 +5,6 @@ type AuthenticationRequest struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Handwring string `json:"handwriting"`
+	Race      string `json:"race,omitempty"`
 	Action    string `json:"action"`
 }

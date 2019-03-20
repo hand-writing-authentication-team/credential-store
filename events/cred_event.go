@@ -26,6 +26,7 @@ func CreateUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions)
 		Username:        username,
 		PasswordContent: encoded_password,
 		Handwriting:     handwriting,
+		Race:            authReq.Race,
 		Created:         time.Now().Unix(),
 		Modified:        time.Now().Unix(),
 	}
@@ -77,6 +78,7 @@ func UpdateUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions)
 		Username:        username,
 		PasswordContent: encoded_password,
 		Handwriting:     handwriting,
+		Race:            authReq.Race,
 		Created:         time.Now().Unix(),
 		Modified:        time.Now().Unix(),
 	}

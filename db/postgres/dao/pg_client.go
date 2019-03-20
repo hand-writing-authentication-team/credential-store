@@ -22,6 +22,7 @@ func scanUserCredRow(row *sql.Row, ucm *models.UserCredentials) error {
 		&ucm.Username,
 		&ucm.Handwriting,
 		&ucm.PasswordContent,
+		&ucm.Race,
 		&ucm.Created,
 		&ucm.Modified,
 		&ucm.Deleted)
@@ -72,11 +73,11 @@ func (p *PGDBInstance) Begin() (txm *TXManager, err error) {
 }
 
 func (p *PGDBInstance) Insert(txm *TXManager, ucm models.UserCredentials) (*models.UserCredentials, error) {
-	stmt := `INSERT INTO user_cred (username, hand_writing, pw_encoded, created, modified, deleted)
-                     VALUES($1,$2,$3,$4,$5,FALSE) RETURNING *;`
+	stmt := `INSERT INTO user_cred (username, hand_writing, pw_encoded, race, created, modified, deleted)
+                     VALUES($1,$2,$3,$4,$5,$6,FALSE) RETURNING *;`
 
 	row := txm.Tx.QueryRow(stmt, ucm.Username, ucm.Handwriting,
-		ucm.PasswordContent, ucm.Created, ucm.Modified)
+		ucm.PasswordContent, ucm.Race, ucm.Created, ucm.Modified)
 	retUcm := &models.UserCredentials{}
 	err := scanUserCredRow(row, retUcm)
 	if err != nil {

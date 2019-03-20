@@ -7,6 +7,7 @@ CREATE TABLE user_cred(
    username TEXT NOT NULL CHECK(username <> ''),
    hand_writing TEXT NOT NULL CHECK(hand_writing <> ''),
    pw_encoded TEXT NOT NULL CHECK(pw_encoded <> ''),
+   race TEXT,
    created INTEGER,
    modified INTEGER CHECK(modified >= created),
    deleted BOOLEAN DEFAULT FALSE,
