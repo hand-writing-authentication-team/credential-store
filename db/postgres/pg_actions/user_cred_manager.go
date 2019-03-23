@@ -80,3 +80,19 @@ func (p *PgActions) Update(ucm models.UserCredentials) (*models.UserCredentials,
 	log.Debug("successfully updated usercred model")
 	return retUcm, nil
 }
+
+func (p *PgActions) InsertsecondHW(uvHW models.UserValidateHW) (*models.UserValidateHW, error) {
+	txm, err := p.db.Begin()
+	if err != nil {
+		log.Error("transaction creation failed")
+		return nil, err
+	}
+	retUvHW, err := p.db.InsertSecondHandwriting(txm, uvHW)
+	defer txm.End(err)
+	if err != nil {
+		log.WithError(err).Error("error occured when insert a user validate hw model")
+		return nil, err
+	}
+	log.Debug("successfully inserted user validate HW model")
+	return retUvHW, nil
+}

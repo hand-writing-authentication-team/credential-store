@@ -14,14 +14,8 @@ services:
       dockerfile: Dockerfile-pg
     restart: always
     container_name: postgres
-    environment:
-      - POSTGRES_USER=credAdmin
-      - POSTGRES_PASSWORD=Test1234@
-      - POSTGRES_DB=credstore
     ports:
       - "5432:5432"
-    volumes:
-      - db-data:/var/lib/mysql/data
   
   rabbit:
     image: "rabbitmq:3-management"
@@ -59,6 +53,3 @@ services:
       - PG_PORT=5432
       - REDIS_ADDR=redis:6379
       - REDIS_CH=result
-
-volumes:
-  db-data:

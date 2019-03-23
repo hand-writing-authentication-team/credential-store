@@ -1,10 +1,11 @@
 package constants
 
 const (
-	AuthAction   = "authenticate"
-	CreateAction = "create"
-	DeleteAction = "delete"
-	UpdateAction = "update"
+	AuthAction            = "authenticate"
+	CreateAction          = "create"
+	DeleteAction          = "delete"
+	UpdateAction          = "update"
+	CollectSecondHWAction = "collect"
 
 	StatusError         = "ERROR"
 	StatusSuccess       = "SUCCESS"
@@ -14,4 +15,5 @@ const (
 
 	NOT_MATCH             = "password not match"
 	ACCOUNT_ALREADY_EXIST = "account already exist"
+	ACCOUNT_NOT_FOUND     = "account not found"
 )

@@ -28,6 +28,16 @@ func scanUserCredRow(row *sql.Row, ucm *models.UserCredentials) error {
 		&ucm.Deleted)
 }
 
+func scanUserHWRow(row *sql.Row, uvHW *models.UserValidateHW) error {
+	return row.Scan(&uvHW.ID,
+		&uvHW.UserID,
+		&uvHW.Username,
+		&uvHW.Handwriting,
+		&uvHW.Created,
+		&uvHW.Modified,
+		&uvHW.Deleted)
+}
+
 func NewDBInstance(dbhost, dbport, dbuser, dbpass, dbname string) (*PGDBInstance, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -136,4 +146,31 @@ func (p *PGDBInstance) Update(txm *TXManager, ucm models.UserCredentials) (*mode
 	}
 	log.Infof("updation for user %s succeeded!", ucm.Username)
 	return retUcm, nil
+}
+
+func (p *PGDBInstance) InsertSecondHandwriting(txm *TXManager, uvHW models.UserValidateHW) (*models.UserValidateHW, error) {
+	ucm, err := p.RetrieveByUsername(txm, uvHW.Username)
+	if err != nil {
+		log.WithError(err).Errorf("[SEC_HW]retrieve user cred model failed for user %s", uvHW.Username)
+		return nil, errors.New(constants.ACCOUNT_NOT_FOUND)
+	}
+	userID := ucm.ID
+
+	stmt := `INSERT INTO validate_handwriting (userId, username, hand_writing, created, modified, deleted)
+                     VALUES($1,$2,$3,$4,$5,FALSE) RETURNING *;`
+
+	row := txm.Tx.QueryRow(stmt, userID, uvHW.Username, uvHW.Handwriting,
+		uvHW.Created, uvHW.Modified)
+	retUvHW := &models.UserValidateHW{}
+	err = scanUserHWRow(row, retUvHW)
+	if err != nil {
+		log.WithError(err).Errorf("[SEC_HW]insertion for user's second handwriting %s failed", uvHW.Username)
+		pqErr := err.(*pq.Error)
+		if pqErr.Code == "23505" {
+			return nil, errors.New(constants.ACCOUNT_ALREADY_EXIST)
+		}
+		return nil, err
+	}
+	log.Infof("[SEC_HW]Insertion for user's second handwriting %s succeeded!", uvHW.Username)
+	return retUvHW, nil
 }

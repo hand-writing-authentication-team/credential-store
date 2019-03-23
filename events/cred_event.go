@@ -89,3 +89,22 @@ func UpdateUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions)
 	}
 	return nil
 }
+
+func CreateUserHW(authReq models.AuthenticationRequest, pga *pg_actions.PgActions) error {
+	username := authReq.Username
+	handwriting := authReq.Handwring
+
+	uvHW := models.UserValidateHW{
+		Username:    username,
+		Handwriting: handwriting,
+		Created:     time.Now().Unix(),
+		Modified:    time.Now().Unix(),
+	}
+	_, err := pga.InsertsecondHW(uvHW)
+	if err != nil {
+		log.WithError(err).Error("Internal error happen when inserting usercred")
+		return err
+	}
+	log.Infof("successfully create user's handwriting %s record!", username)
+	return nil
+}

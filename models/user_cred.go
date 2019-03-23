@@ -10,3 +10,13 @@ type UserCredentials struct {
 	Modified        int64
 	Deleted         bool
 }
+
+type UserValidateHW struct {
+	ID          string
+	UserID      string
+	Username    string
+	Handwriting string
+	Created     int64
+	Modified    int64
+	Deleted     bool
+}
