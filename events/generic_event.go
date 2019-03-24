@@ -91,6 +91,17 @@ func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.P
 			}
 			rq.SuccessInfo(authReq, constants.StatusSuccess)
 			break
+		case constants.CollectAction:
+			log.Infof("start to collect user's handwriting for analysis")
+			err = Collect(authReq, pga)
+			if err != nil {
+				// TODO: should go into the result queue
+				log.WithError(err).Error("Error occured when collecting user")
+				rq.ErrorInfo(authReq, err.Error())
+				return
+			}
+			rq.SuccessInfo(authReq, constants.StatusCreated)
+			break
 		case constants.CollectSecondHWAction:
 			log.Infof("start to collect user's second handwriting for analysis")
 			err = CreateUserHW(authReq, pga)

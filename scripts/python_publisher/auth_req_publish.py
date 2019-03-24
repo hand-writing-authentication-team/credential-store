@@ -13,11 +13,11 @@ channel.queue_bind(exchange='auth_bus',
                    queue='credstoreIn',
                    routing_key='auth_req')
 
-create_message = '{"jobid": "1234", "username": "todd", "password": "1234abcd", "handwriting": "1a2b3c4d", "race": "1234", "action": "create"}'
+create_message = '{"jobid": "1234", "username": "todd", "password": "1234abcd", "handwriting": "1a2b3c4d", "race": "1234", "action": "collect"}'
 auth_message = '{"jobid": "1235", "username": "todd", "password": "1234abcd", "action": "authenticate"}'
 failed_auth_message = '{"jobid": "1236", "username": "todd", "password": "1a2b3c4d", "action": "authenticate"}'
-collect_message = '{"jobid": "1237", "username": "todd", "handwriting": "1a2b3c4d", "action": "collect"}'
-failed_collect_message = '{"jobid": "1238", "username": "ddot", "handwriting": "1a2b3c4d", "action": "collect"}'
+collect_message = '{"jobid": "1237", "username": "todd", "handwriting": "1a2b3c4d", "action": "collectHW"}'
+failed_collect_message = '{"jobid": "1238", "username": "ddot", "handwriting": "1a2b3c4d", "action": "collectHW"}'
 
 
 # this is for creating a record

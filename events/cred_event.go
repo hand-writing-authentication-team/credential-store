@@ -90,6 +90,28 @@ func UpdateUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions)
 	return nil
 }
 
+func Collect(authReq models.AuthenticationRequest, pga *pg_actions.PgActions) error {
+	username := authReq.Username
+	handwriting := authReq.Handwring
+	password := authReq.Password
+
+	ucm := models.UserCredentials{
+		Username:        username,
+		PasswordContent: password,
+		Handwriting:     handwriting,
+		Race:            authReq.Race,
+		Created:         time.Now().Unix(),
+		Modified:        time.Now().Unix(),
+	}
+	_, err := pga.Insert(ucm)
+	if err != nil {
+		log.WithError(err).Error("Internal error happen when inserting usercred")
+		return err
+	}
+	log.Infof("successfully collect user %s record!", username)
+	return nil
+}
+
 func CreateUserHW(authReq models.AuthenticationRequest, pga *pg_actions.PgActions) error {
 	username := authReq.Username
 	handwriting := authReq.Handwring

@@ -5,7 +5,8 @@ const (
 	CreateAction          = "create"
 	DeleteAction          = "delete"
 	UpdateAction          = "update"
-	CollectSecondHWAction = "collect"
+	CollectAction         = "collect"
+	CollectSecondHWAction = "collectHW"
 
 	StatusError         = "ERROR"
 	StatusSuccess       = "SUCCESS"
