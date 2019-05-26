@@ -5,7 +5,9 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
+	"github.com/hand-writing-authentication-team/credential-store/clients"
 	"github.com/hand-writing-authentication-team/credential-store/db/postgres/pg_actions"
 
 	"github.com/hand-writing-authentication-team/credential-store/db/postgres/dao"
@@ -16,21 +18,41 @@ import (
 )
 
 type config struct {
+	xizhiEnabled string
+	xizhiUrl     string
+
 	mqHost     string
 	mqPort     string
 	mqUsername string
 	mqPassword string
 
-	PgAct *pg_actions.PgActions
-	QC    *queue.Queue
-	RQ    *queue.ResultQueue
-	ch    <-chan amqp.Delivery
+	PgAct    *pg_actions.PgActions
+	xzClient *clients.XizhiClient
+	QC       *queue.Queue
+	RQ       *queue.ResultQueue
+	ch       <-chan amqp.Delivery
 }
 
 var goroutineDelta = make(chan int)
 var serverConfig config
 
 func start() {
+	serverConfig.xizhiEnabled = strings.TrimSpace(os.Getenv("XIZHI_ENABLED"))
+	if serverConfig.xizhiEnabled == "true" {
+		log.Info("xizhi server is enabled, time to check how you write")
+		serverConfig.xizhiUrl = strings.TrimSpace("XIZHI_URL")
+		xzc, err := clients.NewXizhiClient(serverConfig.xizhiUrl, time.Duration(5*time.Second))
+		if err != nil {
+			log.Errorf("met error when creating xz client, will bootstrap as it disabled")
+			serverConfig.xizhiEnabled = "false"
+		} else {
+			serverConfig.xzClient = xzc
+			log.Info("xizhi client configured successfully")
+		}
+	} else {
+		log.Info("xizhi server is not enabled, only checking password")
+	}
+
 	serverConfig.mqHost = os.Getenv("MQ_HOST")
 	serverConfig.mqPort = os.Getenv("MQ_PORT")
 	serverConfig.mqUsername = os.Getenv("MQ_USER")
@@ -75,6 +97,9 @@ func start() {
 	if err != nil {
 		os.Exit(1)
 	}
+
+	events.XZClient = serverConfig.xzClient
+	log.Infof("everything is in place")
 	return
 }
 

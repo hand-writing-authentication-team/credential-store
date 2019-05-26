@@ -4,12 +4,16 @@ import (
 	"database/sql"
 	"encoding/json"
 
+	"github.com/hand-writing-authentication-team/credential-store/clients"
+
 	"github.com/hand-writing-authentication-team/credential-store/db/postgres/pg_actions"
 	"github.com/hand-writing-authentication-team/credential-store/models"
 	"github.com/hand-writing-authentication-team/credential-store/pkg/constants"
 	"github.com/hand-writing-authentication-team/credential-store/queue"
 	log "github.com/sirupsen/logrus"
 )
+
+var XZClient *clients.XizhiClient
 
 func GenericEventHandler(msg []byte, queueClient *queue.Queue, pga *pg_actions.PgActions, rq *queue.ResultQueue) {
 	go func() {
