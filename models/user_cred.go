@@ -5,6 +5,7 @@ type UserCredentials struct {
 	Username        string
 	PasswordContent string
 	Handwriting     string
+	UserModel       string
 	Race            string
 	Created         int64
 	Modified        int64

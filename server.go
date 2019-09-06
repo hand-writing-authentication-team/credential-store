@@ -40,7 +40,7 @@ func start() {
 	serverConfig.xizhiEnabled = strings.TrimSpace(os.Getenv("XIZHI_ENABLED"))
 	if serverConfig.xizhiEnabled == "true" {
 		log.Info("xizhi server is enabled, time to check how you write")
-		serverConfig.xizhiUrl = strings.TrimSpace("XIZHI_URL")
+		serverConfig.xizhiUrl = strings.TrimSpace(os.Getenv("XIZHI_URL"))
 		xzc, err := clients.NewXizhiClient(serverConfig.xizhiUrl, time.Duration(5*time.Second))
 		if err != nil {
 			log.Errorf("met error when creating xz client, will bootstrap as it disabled")

@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/hand-writing-authentication-team/credential-store/models"
-	"github.com/labstack/gommon/log"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
-	REL_ANALYZE_URL  = "analyze"
-	REL_VALIDATE_URL = "validate"
+	REL_ANALYZE_URL  = "v1/analyze"
+	REL_VALIDATE_URL = "v1/validate"
 
 	TYPE_JSON = "application/json"
 )
@@ -27,6 +27,7 @@ type XizhiClient struct {
 }
 
 func NewXizhiClient(xizhiDest string, timeout time.Duration) (xzClient *XizhiClient, err error) {
+	xzClient = &XizhiClient{}
 	httpClient := &http.Client{
 		Timeout: timeout,
 	}
@@ -43,48 +44,49 @@ func NewXizhiClient(xizhiDest string, timeout time.Duration) (xzClient *XizhiCli
 
 }
 
-func (xz *XizhiClient) Analyze(handwriting string, prevFeature []models.Feature) (features []models.Feature, err error) {
+func (xz *XizhiClient) Analyze(handwriting string) (features models.Feature, err error) {
+	log.Info("start to analyze in XIZHI")
 	relUrl, _ := url.Parse(REL_ANALYZE_URL)
 	fullUrl := xz.Url.ResolveReference(relUrl)
 	if err != nil {
 		log.Errorf("error when forming analyze url")
-		return nil, err
+		return models.Feature{}, err
 	}
 	reqBody := models.FeatureReq{
 		UserHandwriting: handwriting,
-		PrevDataPoints:  prevFeature,
 	}
 	reqBodyBytes, _ := json.Marshal(reqBody)
 
 	resp, err := xz.Client.Post(fullUrl.String(), TYPE_JSON, bytes.NewBuffer(reqBodyBytes))
 	if err != nil {
 		log.Error("error %s occured when sending req to xizhi", err)
-		return nil, err
+		return models.Feature{}, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		log.Error("xizhi returned non 200 resp [%v]", resp.StatusCode)
-		return nil, errors.New(fmt.Sprintf("status code [%v]", resp.StatusCode))
+		return models.Feature{}, errors.New(fmt.Sprintf("status code [%v]", resp.StatusCode))
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Error("error happen when reading response from xizhi")
-		return nil, err
+		return models.Feature{}, err
 	}
 
 	err = json.Unmarshal(bodyBytes, &features)
 	if err != nil {
 		log.Error("error happen when unmarshal response body to features")
-		return nil, err
+		return models.Feature{}, err
 	}
 
 	log.Info("Successfully analyzed features")
 	return features, nil
 }
 
-func (xz *XizhiClient) Validate(handwriting string, prevFeature []models.Feature) (status bool, err error) {
+func (xz *XizhiClient) Validate(handwriting string, prevFeature models.Feature) (status bool, err error) {
+	log.Info("start to validate in XIZHI")
 	relUrl, _ := url.Parse(REL_VALIDATE_URL)
 	fullUrl := xz.Url.ResolveReference(relUrl)
 	if err != nil {
@@ -93,7 +95,7 @@ func (xz *XizhiClient) Validate(handwriting string, prevFeature []models.Feature
 	}
 	reqBody := models.FeatureReq{
 		UserHandwriting: handwriting,
-		PrevDataPoints:  prevFeature,
+		UserModel:       prevFeature.UserModel,
 	}
 	reqBodyBytes, _ := json.Marshal(reqBody)
 
@@ -109,20 +111,6 @@ func (xz *XizhiClient) Validate(handwriting string, prevFeature []models.Feature
 		return false, errors.New(fmt.Sprintf("status code [%v]", resp.StatusCode))
 	}
 
-	var statusObj models.ValidateStatus
-
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Error("error happen when reading response from xizhi")
-		return false, err
-	}
-
-	err = json.Unmarshal(bodyBytes, &statusObj)
-	if err != nil {
-		log.Error("error happen when unmarshal response body to features")
-		return false, err
-	}
-
 	log.Info("Successfully analyzed features")
-	return statusObj.Status, nil
+	return true, nil
 }

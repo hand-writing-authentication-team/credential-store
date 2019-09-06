@@ -5,6 +5,7 @@ CREATE TABLE user_cred(
    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
    username TEXT NOT NULL CHECK(username <> ''),
    hand_writing TEXT NOT NULL CHECK(hand_writing <> ''),
+   user_model TEXT,
    pw_encoded TEXT NOT NULL CHECK(pw_encoded <> ''),
    race TEXT,
    created INTEGER,

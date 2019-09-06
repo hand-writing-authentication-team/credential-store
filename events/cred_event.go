@@ -30,6 +30,15 @@ func CreateUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions)
 		Created:         time.Now().Unix(),
 		Modified:        time.Now().Unix(),
 	}
+
+	user_model, err := XZClient.Analyze(handwriting)
+	if err != nil {
+		log.WithError(err).Error("error happened when getting user model")
+		return err
+	}
+
+	ucm.UserModel = user_model.UserModel
+
 	_, err = pga.Insert(ucm)
 	if err != nil {
 		log.WithError(err).Error("Internal error happen when inserting usercred")
@@ -51,6 +60,18 @@ func AuthUser(authReq models.AuthenticationRequest, pga *pg_actions.PgActions) e
 		log.Debug("user password not match db's")
 		return errors.New(constants.NOT_MATCH)
 	}
+
+	if ucm.UserModel == "" {
+		log.Info("user model does not exist")
+	} else {
+		status, err := XZClient.Validate(authReq.Handwring, models.Feature{UserModel: ucm.UserModel})
+		if err != nil || status == false {
+			log.Error("user handwriting validation failed")
+			return errors.New(constants.NOT_MATCH)
+		}
+		log.Info("user handwriting matches")
+	}
+
 	return nil
 }
 

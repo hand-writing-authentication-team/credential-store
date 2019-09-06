@@ -31,6 +31,14 @@ services:
     labels:
       NAME: "rabbitmq1"
 
+  xizhi:
+    image: xizhi:latest
+    restart: always
+    container_name: xizhi
+    environment:
+      - HOST=0.0.0.0
+      - PORT=5000
+
   credstore:
     build:
       context: .
@@ -40,6 +48,7 @@ services:
       - "db"
       - "redis"
       - "rabbit"
+      - "xizhi"
     container_name: credstore
     environment:
       - MQ_HOST=rabbit
@@ -53,3 +62,5 @@ services:
       - PG_PORT=5432
       - REDIS_ADDR=redis:6379
       - REDIS_CH=result
+      - XIZHI_ENABLED=true
+      - XIZHI_URL=http://xizhi:5000

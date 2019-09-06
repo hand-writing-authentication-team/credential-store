@@ -1,12 +1,12 @@
 package models
 
 type Feature struct {
-	DataPoints map[string]interface{} `json:"data_points"`
+	UserModel string `json:"user_model"`
 }
 
 type FeatureReq struct {
-	UserHandwriting string    `json:"user_handwriting"`
-	PrevDataPoints  []Feature `json:"previous_data_points,omitempty"`
+	UserHandwriting string `json:"handwriting"`
+	UserModel       string `json:"user_model,omitempty"`
 }
 
 type ValidateStatus struct {

@@ -51,6 +51,18 @@
 			"revisionTime": "2018-10-04T22:41:46Z"
 		},
 		{
+			"checksumSHA1": "R6DzcBLEP0BONPpsyr+11N7xh5w=",
+			"path": "github.com/labstack/gommon/color",
+			"revision": "82ef680aef5189b68682876cf70d09daa4ac0f51",
+			"revisionTime": "2019-01-25T18:56:10Z"
+		},
+		{
+			"checksumSHA1": "KBY5MgEAy+K9li/utcyqc8HOIvc=",
+			"path": "github.com/labstack/gommon/log",
+			"revision": "82ef680aef5189b68682876cf70d09daa4ac0f51",
+			"revisionTime": "2019-01-25T18:56:10Z"
+		},
+		{
 			"checksumSHA1": "xxLSo5tKtXc7jGrR70yoEfza8Cw=",
 			"path": "github.com/lib/pq",
 			"revision": "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee",
@@ -63,6 +75,18 @@
 			"revisionTime": "2018-10-16T16:26:27Z"
 		},
 		{
+			"checksumSHA1": "SEnjvwVyfuU2xBaOfXfwPD5MZqk=",
+			"path": "github.com/mattn/go-colorable",
+			"revision": "efa589957cd060542a26d2dd7832fd6a6c6c3ade",
+			"revisionTime": "2018-03-10T13:32:14Z"
+		},
+		{
+			"checksumSHA1": "Ya+baVBU/RkXXUWD3LGFmGJiiIg=",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7",
+			"revisionTime": "2019-03-12T13:58:54Z"
+		},
+		{
 			"checksumSHA1": "KIAfjm15EMYrXXbVBUO6ZX9c4t0=",
 			"path": "github.com/sirupsen/logrus",
 			"revision": "4f5fd631f16452fbd023813c1eb7dbd67130cb0c",
@@ -73,6 +97,18 @@
 			"path": "github.com/streadway/amqp",
 			"revision": "884228600bc96c993ab12fb81ba78bf0c280e88a",
 			"revisionTime": "2019-02-14T18:30:23Z"
+		},
+		{
+			"checksumSHA1": "ua2PK6PDbNCyzxOmakS3BJoF8Co=",
+			"path": "github.com/valyala/bytebufferpool",
+			"revision": "cdfbe9377474227bb42120c1e22fd4433e7f69bf",
+			"revisionTime": "2018-09-05T18:22:47Z"
+		},
+		{
+			"checksumSHA1": "gtG8jeB0fcTmKZf+6Vbcoa6nfec=",
+			"path": "github.com/valyala/fasttemplate",
+			"revision": "dcecefd839c4193db0d35b88ec65b4c12d360ab0",
+			"revisionTime": "2017-02-24T21:24:29Z"
 		},
 		{
 			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
